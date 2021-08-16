@@ -1,0 +1,74 @@
+
+@model UpdateActiveStatus;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+ <!DOCTYPE html>
+ 
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <style>
+   .form-control {
+       width: 25%;
+    }
+    .field-validation-valid
+     {
+         display: none;
+     }
+     .validation-summary-valid
+     {
+         display: none;
+     }
+    textarea {
+       width: 400px;
+       height: 100px;
+       display: block;
+    }
+    #StatusType{
+        display: block;
+    }
+    </style>
+</head>
+<body>
+
+    @using (Html.BeginForm("ChangeActiveStatus", "Home"))
+    {
+        <h3><strong>Activate/Inactivate Users</strong></h3>
+        <div class="form-group">
+            @Html.RadioButtonFor(model => model.IsUserId, "true") <label>UserId</label>
+            @Html.RadioButtonFor(model => model.IsUserId, "false") <label>UserName</label>
+            <br>
+            @Html.ValidationMessageFor(m => m.IsUserId, "Please select one value", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.UserIdsORUserNames)
+            @Html.EditorFor(m => m.UserIdsORUserNames, new { @class = "form-control", @id = "IDtxtbox" })
+            @Html.ValidationMessageFor(m => m.UserIdsORUserNames, "Value is required", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Status)
+            @{
+                List<SelectListItem> type = new List<SelectListItem>();
+                type.Add(new SelectListItem { Text = "Active", Value = "true" });
+                type.Add(new SelectListItem { Text = "Inactive", Value = "false" });
+            }
+            @Html.DropDownListFor(m => m.Status, type, "-- Select Status --", new { @id = "StatusType" })
+            @Html.ValidationMessageFor(m => m.Status, "Status is required", new { @class = "text-danger" })
+        </div>
+        <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
+        @if (Model != null && !string.IsNullOrEmpty(Model.Message))
+        {
+            <span id="message">@Html.DisplayFor(m => m.Message)</span>
+        }
+    }
+</body>
+ <!-- <script>
+     window.onload=function(){
+     var url = new URL(location.href);
+     if(url.searchParams.get("db"))
+        document.getElementById('db_name').value = url.searchParams.get("db");
+     }         
+ </script> -->
+</html>

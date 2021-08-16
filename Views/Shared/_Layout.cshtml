@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AuthUtility</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        a:focus, a:hover {
+            text-decoration: none;
+        }
+
+        .jumbotron {
+            background-color: #79a9a9 !important;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-size: 20px;
+            color: blue;
+            display: block;
+        }
+
+        #logout {
+            top: 15px;
+            font-size: 20px;
+            position: absolute;
+            right: 22px;
+        }
+
+            #logout a {
+                color: #131111;
+            }
+
+                #logout a:hover {
+                    color: #00ffe0d6;
+                    text-decoration: none;
+                }
+
+        body {
+            background-image: url(../../images/background_image.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .jumbotron a:hover {
+            text-decoration: none !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="jumbotron" style="text-align:center;padding: 0 !important;">
+            <a asp-area="" asp-controller="Home" asp-action="Index"><span id="headingTop" style="font-size:40px;color: #141517;font-weight: 550;font-family: initial;">AuthUtility(IHX)</span></a>
+            <!-- <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item"><a asp-controller="Login" asp-action="SignOut">Sign Out</a></li>
+            </ul>  -->
+            <span id="logout"><a asp-controller="Login" asp-action="SignOut">Sign Out</a></span>
+        </nav>
+
+    </header>
+    <div class="container">
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+</body>
+</html>

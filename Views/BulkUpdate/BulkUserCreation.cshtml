@@ -1,0 +1,234 @@
+﻿@model BulkUserCreation
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="../../css/jquery.loader.css" rel="stylesheet" />
+    <script src="../../js/jquery.loader.js"></script>
+    <style>
+        .swal-title {
+            color: blue;
+        }
+
+        .swal-text {
+            font-weight: 600;
+        }
+
+        .flash {
+            animation-name: flash;
+            animation-duration: 0.2s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-play-state: running;
+        }
+
+        @@keyframes flash {
+            from {
+                color: red;
+            }
+
+            to {
+                color: black;
+            }
+        }
+
+        .info {
+            background-color: #ffffcc;
+            border-left: 6px solid #ffeb3b;
+            display: inline-block;
+        }
+
+        #chkbx {
+            position: absolute;
+            top: 140px;
+            right: 460px;
+        }
+
+        .error {
+            color: #a94442;
+            display: none;
+        }
+
+        textarea, #SelectedRolesIds {
+            width: 400px;
+            height: 150px;
+            display: block;
+        }
+
+        .wrapper {
+            width: 260px;
+            max-height: 250px;
+            overflow-y: scroll;
+            background-color: white;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 30px;
+            height: 17px;
+        }
+
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e65d5d;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+            .slider:before {
+                position: absolute;
+                content: "";
+                height: 13px;
+                width: 13px;
+                left: 2px;
+                bottom: 2px;
+                background-color: white;
+                -webkit-transition: .4s;
+                transition: .4s;
+            }
+
+        input:checked + .slider {
+            background-color: #5DBF3F;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 0.5px #5DBF3F;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(13px);
+            -ms-transform: translateX(13px);
+            transform: translateX(13px);
+        }
+
+        .slider.round {
+            border-radius: 17px;
+        }
+
+            .slider.round:before {
+                border-radius: 50%;
+            }
+    </style>
+</head>
+
+<body>
+    <h3><strong>User Creation In Bulk</strong></h3>
+    <br />
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="file" id="fUpload" name="files" class="form-control" />
+            </div>
+            <div class="col-md-8">
+                <input type="button" class="btn btn-primary" id="btnUpload" value="Upload" />
+            </div>
+        </div>
+    </form>
+    <br />
+    @if (Model != null && Model.AllRoles != null && Model.AllRoles.Keys.Count > 0)
+    {
+        <div id="chkbx">
+            <label>Select Role(s)</label>
+            <div class="wrapper">
+                @foreach (var r in Model.AllRoles)
+                {
+                    <div class="chkboxItem"><input type="checkbox" name="SelectedRolesIds" value="@r.Key"> @r.Value.Trim()</div>
+                }
+            </div>
+            <span class="error">Please select at-least one role.</span>
+        </div>
+    }
+    <label class="switch">
+        <input type="checkbox" id="contactverification">
+        <span class="slider round"></span>
+    </label>
+    <label>&nbsp; Verify Contact</label>
+    <form class="form-inline" method="post" enctype="multipart/form-data" asp-controller="BulkUpdate" asp-action="DownloadSampleBulkUserCreation">
+        <div class="row">
+            <div class="col-md-4" style="padding-top:10px;">
+                <button class="btn btn-info" style="color:black;">Download Sample Excel</button>
+            </div>
+        </div>
+    </form>
+    <br />
+    @*<div class="info">
+            <strong style="margin-left: 2%; font-size: 16px; ">Note :-</strong>
+            <ul>
+                <li>FirstName, UserName, EntityId and Password is mandatory.</li>
+            </ul>
+        </div>*@
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        $('#btnUpload').on('click', function () {
+            var checked_checkboxes = $("#chkbx input[type=checkbox]:checked");
+            if (checked_checkboxes.length == 0) {
+                $(".error").show();
+                return false;
+            }
+            var fileExtension = ['xls', 'xlsx'];
+            var filename = $('#fUpload').val();
+            if (filename.length == 0) {
+                swal("ERROR", "Please select a file.", "error");
+                return false;
+            }
+            else {
+                var extension = filename.replace(/^.*\./, '');
+                if ($.inArray(extension, fileExtension) == -1) {
+                    swal("ERROR", "Please select only excel files.", "error");
+                    return false;
+                }
+            }
+            var fdata = new FormData();
+            var fileUpload = $("#fUpload").get(0);
+            var files = fileUpload.files;
+            fdata.append(files[0].name, files[0]);
+            fdata.append("Roles", $.map(checked_checkboxes, function (c) { return c.defaultValue; }));
+            fdata.append("VerifyContact", $("#contactverification").prop('checked'));
+            $.ajax({
+                type: "POST",
+                url: "/BulkUpdate/BulkUserCreation",
+                data: fdata,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $('body').loader('show');
+                },
+                success: function (response) {
+                    $('body').loader('hide');
+                    if (response.isSuccess)
+                        swal("AWESOME", "User creation successful", "success");
+                    else
+                        swal("OOPS", response.message, "error");
+
+                    $('#fUpload').val('');
+                    $('#chkbx input[type=checkbox]').prop('checked', false);
+                    $("#contactverification").prop('checked', false);
+                },
+                error: function (error) {
+                    $('body').loader('hide');
+                    console.log(error.responseText);
+                    $('#chkbx input[type=checkbox]').prop('checked', false);
+                    $("#contactverification").prop('checked', false);
+                }
+            });
+        })
+    });
+</script>

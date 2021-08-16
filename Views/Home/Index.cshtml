@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<!DOCTYPE html>
+<html>
+<style>
+    .list-group-item {
+        position: relative;
+        display: block;
+        padding: 8px 10px;
+        margin-bottom: 0;
+        background-color: #a6c1fd;
+        border: 1px solid #bbab39;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    a.list-group-item:hover {
+        color: #e21238;
+        background-color: #a1e8d8;
+    }
+
+    .col-md-6 {
+        text-align: center;
+        width: 30%;
+    }
+</style>
+<body>
+    <div class="col-md-6" style="margin-left:20%">
+        <div class="list-group">
+            <a asp-controller="Home" asp-action="ChangeEmail" class="list-group-item">Update User EmailId</a>
+            <a asp-controller="Home" asp-action="UpdateFirstLastName" class="list-group-item">Update User First/Last Name</a>
+            <a asp-controller="Home" asp-action="ChangeMob" class="list-group-item">Update User Phone Number</a>
+            <a asp-controller="Home" asp-action="UpdatePassword" class="list-group-item">Update User Password</a>
+        </div>
+    </div>
+    <div class="col-md-6" style="margin-right:20%">
+        <div class="list-group">
+            <a asp-controller="Home" asp-action="UpdateLoginName" class="list-group-item">Update User LoginName</a>
+            <a asp-controller="Home" asp-action="UpdateEntityId" class="list-group-item">Update EntityId</a>
+            <a asp-controller="Home" asp-action="UnlockUsers" class="list-group-item">Unlock Users</a>
+            <a asp-controller="Home" asp-action="UpdateIsOTPVerified" class="list-group-item">Contact Verification</a>
+        </div>
+    </div>
+    <div class="col-md-6" style="margin-left: 35%">
+        <div class="list-group">
+            <a asp-controller="Home" asp-action="ChangeActiveStatus" class="list-group-item">Activate/Inactivate Users</a>
+            <a asp-controller="Home" asp-action="UpdateRole" class="list-group-item">Update Auth Role</a>
+            <a asp-controller="User" asp-action="ManagerCreation" class="list-group-item">Manage User</a>
+            <a asp-controller="Home" asp-action="UpdatePasswordBulk" class="list-group-item">Update Password In Bulk</a>
+            <a asp-controller="BulkUpdate" asp-action="RetailUserCreation" class="list-group-item">Bulk User Creation</a>
+        </div>
+    </div>
+</body>
+</html>

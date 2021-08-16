@@ -1,0 +1,108 @@
+
+@model UpdateRole;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+ <!DOCTYPE html>
+ 
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <style>
+   .form-control {
+       width: 25%;
+    }
+    .field-validation-valid
+     {
+         display: none;
+     }
+     .validation-summary-valid
+     {
+         display: none;
+     }
+    textarea,#SelectedRolesIds {
+       width: 400px;
+       height: 150px;
+       display: block;
+    }
+    .form-group{
+        width:450px;
+    }
+    .error {
+            color: #a94442;
+            display: none;
+        }
+    .wrapper
+       {
+           width: 220px;
+           max-height: 250px;
+           overflow-y: scroll;
+           background-color: white;
+       }
+       #chkbx{
+           position: absolute;
+           top: 140px;
+           right: 500px;
+       }
+    </style>
+</head>
+<body>
+
+    @using (Html.BeginForm("UpdateRole", "Home"))
+    {
+        <h3><strong>Update Role</strong></h3>
+        <div class="form-group">
+            @Html.RadioButtonFor(model => model.IsUserId, "true") <label>UserId</label>
+            @Html.RadioButtonFor(model => model.IsUserId, "false") <label>UserName</label>
+            <br>
+            @Html.ValidationMessageFor(m => m.IsUserId, "Please select one value", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.UserIdsORUserNames)
+            @Html.EditorFor(m => m.UserIdsORUserNames, new { @class = "form-control", @id = "IDtxtbox" })
+            @Html.ValidationMessageFor(m => m.UserIdsORUserNames, "Value is required", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.DisablePreviousRoles)
+            @{
+                List<SelectListItem> type = new List<SelectListItem>();
+                type.Add(new SelectListItem { Text = "True", Value = "true" });
+                type.Add(new SelectListItem { Text = "False", Value = "false" });
+            }
+            @Html.DropDownListFor(m => m.DisablePreviousRoles, type, new { @id = "DisablePreviousRoles" })
+
+        </div>
+        @if (Model != null && Model.AllRoles != null && Model.AllRoles.Keys.Count > 0)
+        {
+            <div id="chkbx">
+                @Html.LabelFor(x => x.SelectedRolesIds)<br>
+                <div class="wrapper">
+                    @foreach (var r in Model.AllRoles)
+                    {
+                        <div class="chkboxItem"><input type="checkbox" name="SelectedRolesIds" value="@r.Key">@r.Value.Trim()</div>
+                    }
+                </div>
+                <span class="error">Please select at-least one role.</span>
+            </div>
+        }
+        <button type="submit" value="Submit" id="btnSubmit" class="btn btn-primary">Submit</button>
+        @if (Model != null && !string.IsNullOrEmpty(Model.Message))
+        {
+            <span id="message">@Html.DisplayFor(m => m.Message)</span>
+        }
+    }
+</body>
+ <script>
+$(function () {
+            $("#btnSubmit").click(function () {
+                var checked_checkboxes = $("#chkbx input[type=checkbox]:checked");
+                if (checked_checkboxes.length == 0) {
+                    $(".error").show();
+                    return false;
+                }
+                return true;
+            });
+        });
+</script>
+</html>

@@ -1,0 +1,548 @@
+﻿@model ManagerCreationDTO;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+    <link href="../../css/jquery.loader.css" rel="stylesheet" />
+    <script src="../../js/jquery-ui-1.8.24.min.js"></script>
+    <script src="../../js/jquery.validate.min.js"></script>
+    <link href="../../themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="../../Plugins/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../Plugins/bootstrap-multiselect-master/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <script src="../../Plugins/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    <script src="../../Plugins/bootstrap-multiselect-master/dist/js/bootstrap-multiselect.js"></script>
+    <script src="../../js/jquery.loader.js"></script>
+    <style>
+        .editor-label, .editor-field, .multiselect {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .ui-autocomplete {
+            overflow: auto;
+            height: 400px;
+        }
+
+        .field-validation-error, .validation-summary-errors {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="margin-top:15px;margin-bottom: 20px;">
+            <label style="font-size:24px;font-weight:bold;margin-bottom: 25px;">Search User</label>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <input type="text" id="txtusername" placeholder="Enter username" />
+                    OR
+                    <input type="text" id="txtuserid" placeholder="Enter user id" />
+                    OR
+                    <input type="text" id="txtemailid" placeholder="Enter email id" />
+                    OR
+                    <input type="text" id="txtphoneno" placeholder="Enter phone no" />
+                </div>
+                <br />
+                <div class="col-sm-3" style="margin-top: 10px;"><label id="searchuser" class="btn btn-primary">Search</label></div>
+            </div>
+        </div>
+        <hr style="border-top: 2px dashed green;" />
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <fieldset>
+                <label style="font-size:24px;font-weight:bold;">Manage User</label>
+                <label id="refreshcache" style="float:right;" class="btn btn-primary">Refresh Cache</label>
+
+                @Html.HiddenFor(model => model.Id, new { @id = "userUniqueId" })
+                @Html.HiddenFor(model => model.PropertiesString)
+                @Html.HiddenFor(model => model.IsPropertyLoaded)
+                <table>
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.UserName)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.UserName)
+                                @Html.ValidationMessageFor(model => model.UserName)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.FirstName)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.FirstName)
+                                @Html.ValidationMessageFor(model => model.FirstName)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.LastName)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.LastName)
+                                @Html.ValidationMessageFor(model => model.LastName)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                            <td><label>LoginType</label></td>
+                            <td>
+                                <div class="editor-label">
+                                    @Html.RadioButton("LoginType", "MA_Role", new { @id = "mediassist", @class = "logintype" })<label>Mediassist</label>
+                                    @Html.RadioButton("LoginType", "DC_Role", new { @id = "dc", @class = "logintype" })<label>DC</label>
+                                    @Html.RadioButton("LoginType", "Insurer_Role", new { @id = "insurer", @class = "logintype" })<label>Insurer</label>
+                                    @Html.RadioButton("LoginType", "Corp_Role", new { @id = "hr", @class = "logintype" })<label>HR</label>
+                                </div>
+                            </td>
+                        </tr>
+
+                    <tr>
+                        <td><label>Roles</label></td>
+                        <td>
+                            <div>
+                                @Html.DropDownList("UserRoles", new List<SelectListItem>(), new { @class = "multiselect", multiple = "multiple" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>@Html.LabelFor(model => model.EntityId)</td>
+                        <td>
+                            <div>
+                                @Html.EditorFor(model => model.EntityId)
+                                @Html.ValidationMessageFor(model => model.EntityId)
+                            </div>
+                        </td>
+                        <td>
+                            <label id="lblEntity" class="btn btn-info" style="margin-left: 10px;">Find</label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.Email)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.Email)
+                                @Html.ValidationMessageFor(model => model.Email)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.PhoneNo)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.PhoneNo)
+                                @Html.ValidationMessageFor(model => model.PhoneNo)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.Password)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.Password)
+                                @Html.ValidationMessageFor(model => model.Password)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.Gender)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.Gender)
+                                @Html.ValidationMessageFor(model => model.Gender)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.IsActive)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.IsActive)
+                                @Html.ValidationMessageFor(model => model.IsActive)
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <fieldset>
+                    <legend>User Properties</legend>
+                    <table>
+                        <tr>
+                            <td>
+                                <select id="UserProps">
+                                    <option value="">EmployeeId</option>
+                                    @*<option value="">ManagerEmployeeId</option>
+                                        <option value="">AgentId</option>
+                                        <option value="">EntityName</option>
+                                        <option value="">EntityType</option>
+                                        <option value="">BranchId</option>
+                                        <option value="">AssignedContracts</option>
+                                        <option value="">AssignedCorporates</option>
+                                        <option value="">StatusId</option>*@
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" id="String" />
+                            </td>
+                            <td>
+                                <label id="addproperty" class="btn btn-default">Add</label>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                <table id="tblShow" border="1">
+                    <thead><tr><th>Name</th><th>Value</th><th>Action</th></tr></thead>
+                    <tbody>
+                        @{
+                            if (Model.UserProperties != null)
+                            {
+                                foreach (var prop in Model.UserProperties)
+                                {
+                                    <tr><td>@prop.Key</td><td>@prop.Value</td><td><label class="removeproperty lblClass">Remove</label></td></tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+                <br>
+                <p>
+                    @{
+                        if (Model.Id == default(int))
+                        {
+                            <button>Create</button>}
+                        else
+                        {
+                            <button>Update</button>}
+                    }
+                </p>
+
+            </fieldset>
+            <div id="entityDialog" title="Select" style="display:none;overflow-x:visible">
+                <div id="notforDC" style="margin-top:10px">
+                    <b> Select Contract : </b> @Html.DropDownList("Contract", new List<SelectListItem>())
+                </div>
+                <div style="margin-top:10px">
+                    <b> Select Entity : </b>
+                    <select id="contractEntity"></select>
+                    <input type="text" id="DCcontractEntity" />
+                </div>
+                <div style="margin-top:10px">
+                    <label id="lblSelect" class="btn btn-primary">Select</label>
+                    <label id="lblSelectDC" class="btn btn-primary">Select</label>
+                </div>
+            </div>
+            @if (Model != null && !string.IsNullOrEmpty(Model.ErrorMsg) && Model.ErrorMsg != "Multiple Users Found")
+            {
+                <span id="message">@Html.DisplayFor(m => m.ErrorMsg)</span>
+            }
+        }
+
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $("form").submit(function () {
+            var Props = "";
+            $.each($('#tblShow tbody tr'), function (n, i) {
+                Props += "'" + $.trim($(i).children().first().text()) + "':'" + $(i).children().first().next().text() + "',";
+            });
+            if (Props != "")
+                Props = Props.substring(0, Props.length - 1);
+
+            $('#PropertiesString').val("{" + Props + "}");
+        });
+
+        $('#addproperty').click(function () {
+            var propname = $('#UserProps option:selected').text();
+            var propValue = $("#String").val();
+            var props = $.map($('#tblShow tbody tr > :nth-child(1)'), function (n) { return $(n).text(); });
+            if ($.inArray(propname, props) > -1)
+                alert("Already Added");
+            else if (propValue != null && propValue != "")
+                $('#tblShow tbody').append('<tr><td>' + propname + '</td><td>' + propValue + '</td><td><label class= "removeproperty lblClass">Remove</label></td></tr>');
+            $('.removeproperty').click(function () {
+                $(this).closest('tr').remove();
+            });
+        });
+        $('.removeproperty').click(function () {
+            $(this).closest('tr').remove();
+        });
+         function LoadDependencies(callback) {
+            $.get("/Utility/GetRolesForGroup?groupKey=" + $('.logintype:checked').val(), function (response) {
+                if (response) {
+                    $('#UserRoles').multiselect('destroy')
+                    var options = "";
+                    $.each(response, function (i, v) {
+
+                        //options += '<input type="checkbox" id="" value=' + v.id + '/>' + v.name;
+                        options += '<option value=' + v.id + '>' + v.name + '</option>';
+                    });
+                    $('#UserRoles').html(options);
+                    $('#UserRoles').multiselect();
+                    callback();
+                }
+            });
+            if ($(".logintype:checked").val() == "MA_Role") {
+                $("#lblEntity").hide();
+                $("#EntityId").val("500000");
+                $("#entityDialog").dialog("close");
+            }
+            else {
+                $("#lblEntity").show();
+                $("#EntityId").val("");
+                $("#EntityId").prop('disabled', false);
+            }
+
+            if ($(".logintype:checked").val() == "DC_Role") {
+                $("#notforDC").hide();
+                $("#Contract").hide();
+                $("#contractEntity").hide();
+                $("#DCcontractEntity").show();
+                $("#lblSelectDC").show();
+            }
+            else {
+                $("#notforDC").show();
+                $("#DCcontractEntity").hide();
+                $("#Contract").show();
+                $("#contractEntity").show();
+            }
+
+            if ($(".logintype:checked").val() == "Insurer_Role" || $(".logintype:checked").val() == "Corp_Role") {
+                $.get("/Utility/Contracts", function (response) {
+                    if (response) {
+                        var options = "";
+
+                        $('#Contract').empty();
+                        $.each(response, function (i, v) {
+                            options += '<option value=' + v.id + '>' + v.name + '</option>';
+                        });
+                        $('#Contract').html(options);
+                    }
+                });
+            }
+
+            //if ($(".logintype:checked").val() == "DC_Role") {
+                //$.ajax({
+                //    type: "GET",
+                //    contentType: "application/json; charset=utf-8",
+                //    url: "/Utility/DCcontractEntity",
+                //    dataType: "json",
+                //    async: false,
+                //    success: function (response) {
+                //        if (response) {
+                //            var options = "";
+                //            $('#DCcontractEntity').empty();
+                //            $.each(response, function (i, v) {
+                //                options += '<option value=' + v.id + '>' + v.fullName + '</option>';
+                //            });
+                //            $('#DCcontractEntity').html(options);
+                //        }
+                //    },
+                //    error: function (err)
+                //    {
+                //        alert('There was some error!!!');
+                //    }
+                //});
+           // }
+    }
+
+    $("#DCcontractEntity").autocomplete({
+        minLength: 3,
+        source: function(request,response) {
+               $.ajax({
+                   url: "/Utility/FetchEntity",
+                   type: "GET",
+                   dataType: "json",
+                   async: false,
+                   data: { SearchTerm: $('#DCcontractEntity').val() },
+                   success: function (data) {
+                       response($.map(data, function (item) {
+                           return { label: item.entity, value: item.id};
+                       }))
+
+                   }
+               })
+           },
+    });
+        $(".logintype").click(function () {
+            $("#lblEntity").show();
+            LoadDependencies(function () {
+
+            });
+        });
+
+        var logintype = "@Model.LoginType";
+        if (logintype != null && logintype != "") {
+            LoadDependencies(function () {
+                $("#EntityId").val("@Model.EntityId");
+                var roles = '@((Model.UserRoles == null) ? "" : string.Join(",", Model.UserRoles))';
+                if (roles != '' || roles != '""') {
+                    var rolesArray = roles.split(',');
+                    $('#UserRoles').multiselect('select', rolesArray, true);
+                    $("#lblEntity").show();
+                }
+            });
+        }
+
+
+    $(document).ready(function () {
+        jQuery.browser = {};
+ (function () {
+    jQuery.browser.msie = false;
+    jQuery.browser.version = 0;
+    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+       jQuery.browser.msie = true;
+       jQuery.browser.version = RegExp.$1;
+  }
+        })();
+
+        if ("@Model.ErrorMsg" == "Multiple Users Found") {
+            alert("@Model.ErrorMsg");
+        }
+
+            $("#entityDialog").dialog({
+                autoOpen: false,
+                height: 200,
+                width: 600
+            });
+            $("#lblEntity").hide();
+            //$("#DCcontractEntity").hide();
+        $("#lblEntity").click(function () {
+            $("#DCcontractEntity").val('');
+            $("#entityDialog").dialog("open");
+            $('#contractEntity').hide();
+                $("#lblSelect").hide();
+                $("#entityDialog").dialog("open");
+                $("#lblSelect").hide();
+        });
+    });
+     $("#Contract").change(function () {
+            $('#contractEntity').show();
+            $("#lblSelect").show();
+            $("#lblSelectDC").hide();
+            $.get("/Utility/EntityRelation?contractId=" + $('#Contract :selected').val(), function (response) {
+                if (response) {
+                    var options = "";
+                    $.each(response, function (i, v) {
+                        options += '<option value=' + v.id + '>' + v.name + '</option>';
+                    });
+                    $('#contractEntity').html(options);
+                }
+            });
+        });
+
+         $("#lblSelect").click(function () {
+            $('#EntityId').val($('#contractEntity :selected').val());
+            $("#entityDialog").dialog("close");
+        });
+    $("#lblSelectDC").click(function () {
+            //$('#EntityId').val($('#DCcontractEntity :selected').val());
+        $('#EntityId').val($('#DCcontractEntity').val());
+            $("#entityDialog").dialog("close");
+        });
+        $('#searchuser').click(function () {
+            var username = $.trim($('#txtusername').val());
+            var userid = $.trim($('#txtuserid').val());
+            var emailid = $.trim($('#txtemailid').val());
+            var phoneno = $.trim($('#txtphoneno').val());
+            window.location = (userid) ? "?userId=" + userid : (emailid) ? "?EmailId=" + emailid : (phoneno) ? "?PhoneNo=" + phoneno :  "?LoginName=" + username;
+            return false;
+        })
+
+    $('body').on('click', '#refreshcache', function ()
+    {
+        $.ajax({
+            url: "/Utility/RefreshCache",
+            type: "GET",
+            beforeSend: function(){
+                 $('body').loader('show');
+          },
+            complete: function () {
+                $('body').loader('hide');
+                alert("Cache Refreshed Successfully!!!");
+          }
+        });
+    });
+
+    //$('#refreshcache').click(function () {
+    //    $('body').loader('show');
+    //    $.ajax({
+    //        url: "/Utility/RefreshCache",
+    //        type: "GET",
+    //        async: false,
+    //        success: function (data) {
+    //             $('body').loader('hide');
+    //        }
+    //    });
+    //    $('body').loader('hide');
+    //});
+
+
+    //$('.logintype').change(function ()
+    //{
+    //    var groupKey = $('.logintype:checked').val();
+    //    var userId= $.trim($('#userUniqueId').val());
+    //    $.ajax({
+    //                type: "GET",
+    //        contentType: "application/json; charset=utf-8",
+    //        url: "/Utility/GetAppBasedProfile?UserId=" + userId+"&GroupKey="+groupKey,
+    //                dataType: "json",
+    //                async: false,
+    //        success: function (response)
+    //        {
+    //                    if (response != null)
+    //                    {
+    //                    }
+    //                },
+    //                error: function (err)
+    //                {
+    //                    alert('There was some error!!!');
+    //                }
+    //            });
+    //});
+</script>
+

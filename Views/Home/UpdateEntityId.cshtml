@@ -1,0 +1,66 @@
+
+@model UpdateEntityId;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+ <!DOCTYPE html>
+ 
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <style>
+   .form-control {
+       width: 25%;
+    }
+    .field-validation-valid
+     {
+         display: none;
+     }
+     .validation-summary-valid
+     {
+         display: none;
+     }
+    textarea {
+       width: 400px;
+       height: 100px;
+       display: block;
+    }
+    </style>
+</head>
+<body>
+
+    @using (Html.BeginForm("UpdateEntityId", "Home"))
+    {
+        <h3><strong>Update Entityid</strong></h3>
+        <div class="form-group">            
+            @Html.RadioButtonFor(model => model.IsUserId, "true") <label>UserId</label>
+            @Html.RadioButtonFor(model => model.IsUserId, "false") <label>UserName</label>
+            <br>
+            @Html.ValidationMessageFor(m => m.IsUserId, "Please select one value", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.UserIdsORUserNames)
+            @Html.EditorFor(m => m.UserIdsORUserNames, new { @class = "form-control", @id = "IDtxtbox" })
+            @Html.ValidationMessageFor(m => m.UserIdsORUserNames, "Value is required", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.OldProviderMasterEntityId)
+            @Html.TextBoxFor(m => m.OldProviderMasterEntityId, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.OldProviderMasterEntityId, "Old ProviderMasterEntityId is required", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.NewProviderMasterEntityId)
+            @Html.TextBoxFor(m => m.NewProviderMasterEntityId, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.NewProviderMasterEntityId, "New ProviderMasterEntityId is required", new { @class = "text-danger" })
+        </div>
+        <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
+        @if (Model != null && !string.IsNullOrEmpty(Model.Message))
+        {
+            <span id="message">@Html.DisplayFor(m => m.Message)</span>
+        }
+    }
+</body>
+</html>

@@ -1,0 +1,252 @@
+﻿@model AliasMapping;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+    <link href="../../css/jquery.loader.css" rel="stylesheet" />
+    <script src="../../js/jquery-ui-1.8.24.min.js"></script>
+    <script src="../../js/jquery.validate.min.js"></script>
+    <link href="../../themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="../../Plugins/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../../Plugins/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
+    <script src="../../js/jquery.loader.js"></script>
+    <style>
+        .editor-label, .editor-field, .multiselect {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .ui-autocomplete {
+            overflow: auto;
+            height: 400px;
+        }
+
+        .field-validation-error, .validation-summary-errors {
+            color: red;
+        }
+
+        .info {
+            background-color: #ffffcc;
+            border-left: 6px solid #ffeb3b;
+            display: inline-block;
+        }
+
+            .info li {
+                font-size: 12px;
+            }
+
+            .info p {
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .info ul {
+                margin-left: -7%;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="margin-top:15px;margin-bottom: 20px;">
+            <label style="font-size:24px;font-weight:bold;margin-bottom: 25px;">Get Corporate Alias Mapping</label>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <input type="text" id="txtpolcorpid" placeholder="Enter PolCorporateId" />
+                </div>
+                <br />
+                <div class="col-sm-3" style="margin-top: 10px;"><label id="searchmapping" class="btn btn-primary">Search</label></div>
+            </div>
+        </div>
+        <hr style="border-top: 2px dashed green;" />
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            <fieldset>
+                <label style="font-size:24px;font-weight:bold;">Manage Corporate Alias Mapping</label>
+                <br />
+                <div class="info">
+                    <div class="col-sm-12">
+                        <strong style="font-size: 16px;">Note :-</strong>
+                        <ol>
+                            <li>For LoginType EMPID, either Prefix or Suffix is mandatory.</li>
+                            <li>For LoginType EMAIL, Possible Aliases is mandatory.</li>
+                        </ol>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>Formats</p>
+                        <ul>
+                            <li>[EMPID] => EmployeeId</li>
+                            <li>[DOB] => Date of Birth</li>
+                            <li>[DOM] => Date of Marraige</li>
+                            <li>[DOJ] => Date of Joining</li>
+                            <li>[ENCRYPTED] => Encrypted</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>Custom Formats</p>
+                        <ul>
+                            <li>Date Of Birth => [DOB]^DateFormat</li>
+                            <li>Text + EmployeCode => Text[EMPID]</li>
+                            <li>EmployeCode + Text => [EMPID]Text </li>
+                            <li>EmployeeCode + DOB =>[EMPID][DOB]^DateFormat </li>
+                            <li>EmployeeCode + DOB + UPPERCASE => [EMPID][DOB]^DateFormat^U</li>
+                            <li>EmployeeCode + DOB + LOWERCASE => [EMPID][DOB]^DateFormat^L</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>Date Formats</p>
+                        <ul>
+                            <li>DDMMYYYY => ddMMyyyy</li>
+                            <li>DD-MM-YYYY => dd-MM-yyyy</li>
+                            <li>DDMMYY => ddMMyy</li>
+                            <li>DD-MMM-YYYY => dd-MMM-yyyy(eg. 12-JAN-1990)</li>
+                            <li>DDMMMYYYY => ddMMMyyyy(eg. 12JAN1990)</li>
+                        </ul>
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.PolCorporateId)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.PolCorporateId)
+                                @Html.ValidationMessageFor(model => model.PolCorporateId)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.PolGroupCorporateId)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.PolGroupCorporateId)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>DBType</label></td>
+                        <td>
+                            <div class="editor-label">
+                                @Html.RadioButton("DBType", "MA", new { @id = "ma", @class = "dbtype" })<label>MA</label>
+                                @Html.RadioButton("DBType", "MAUHS", new { @id = "mauhs", @class = "dbtype" })<label>MAUHS</label>
+                                @Html.RadioButton("DBType", "BOTH", new { @id = "bothdbs", @class = "dbtype" })<label>BOTH</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>LoginType</label></td>
+                        <td>
+                            <div class="editor-label">
+                                @Html.RadioButton("LoginType", "EMPID", new { @id = "empid", @class = "logintype" })<label>EMPID</label>
+                                @Html.RadioButton("LoginType", "EMAIL", new { @id = "email", @class = "logintype" })<label>EMAIL</label>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.Prefix)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.Prefix)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.Suffix)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.Suffix)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.PasswordType)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.PasswordType)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.PossibleAliases)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.PossibleAliases)
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="editor-label">
+                                @Html.LabelFor(model => model.IsActive)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editor-field">
+                                @Html.EditorFor(model => model.IsActive)
+                                @Html.ValidationMessageFor(model => model.IsActive)
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+            </fieldset>
+            <br>
+            <p>
+                <button id="savealias">Save</button>
+            </p>
+            @if (Model != null && !string.IsNullOrEmpty(Model.Message))
+            {
+                <span id="message">@Html.DisplayFor(m => m.Message)</span>
+            }
+        }
+
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    $('#searchmapping').click(function () {
+        var polcorpid = $.trim($('#txtpolcorpid').val());
+        if (polcorpid == "")
+            alert("Please Enter PolCorporateId.");
+        window.location = "?PolCorporateId=" + polcorpid;
+        return false;
+    })
+</script>

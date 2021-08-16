@@ -1,0 +1,108 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="../../css/jquery.loader.css" rel="stylesheet" />
+    <script src="../../js/jquery.loader.js"></script>
+    <style>
+        .swal-title {
+            color: blue;
+        }
+        .swal-text {
+            font-weight: 600;
+        }
+        .flash {
+            animation-name: flash;
+            animation-duration: 0.2s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-play-state: running;
+        }
+
+        @@keyframes flash {
+            from {
+                color: red;
+            }
+
+            to {
+                color: black;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h3><strong>Update User Data In Bulk</strong></h3>
+    <br />
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="file" id="fUpload" name="files" class="form-control" />
+            </div>
+            <div class="col-md-8">
+                <input type="button" class="btn btn-primary" id="btnUpload" value="Upload" />
+            </div>
+        </div>
+    </form>
+    <br />
+
+    <form class="form-inline" method="post" enctype="multipart/form-data" asp-controller="BulkUpdate" asp-action="DownloadSampleFile">
+        <div class="row">
+            <div class="col-md-8" style="padding-top:10px;">
+                <button class="btn btn-info" style="color:black;">Download Sample Excel</button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        $('#btnUpload').on('click', function () {
+            var fileExtension = ['xls', 'xlsx'];
+            var filename = $('#fUpload').val();
+            if (filename.length == 0) {
+                swal("ERROR", "Please select a file.", "error");
+                return false;
+            }
+            else {
+                var extension = filename.replace(/^.*\./, '');
+                if ($.inArray(extension, fileExtension) == -1) {
+                    swal("ERROR", "Please select only excel files.", "error");
+                    return false;
+                }
+            }
+            var fdata = new FormData();
+            var fileUpload = $("#fUpload").get(0);
+            var files = fileUpload.files;
+            fdata.append(files[0].name, files[0]);
+            $.ajax({
+                type: "POST",
+                url: "/BulkUpdate/UpdateUserDetails",
+                data: fdata,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $('body').loader('show');
+                },
+                success: function (response) {
+                    $('body').loader('hide');
+                    if (response.isSuccess) 
+                        swal("AWESOME", "Data has been updated successfully", "success");                                            
+                    else
+                        swal("OOPS", response.errorMessage, "error");
+
+                    $('#fUpload').val('');
+                },
+                error: function (error) {
+                    $('body').loader('hide');
+                    console.log(error.responseText);
+                }
+            });
+        })
+    });
+</script>

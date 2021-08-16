@@ -1,0 +1,49 @@
+﻿@model SyncToElastic;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <style>
+
+        .form-control {
+            width: 25%;
+        }
+
+        .field-validation-valid {
+            display: none;
+        }
+
+        .validation-summary-valid {
+            display: none;
+        }
+
+        textarea {
+            width: 500px;
+            height: 200px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    @using (Html.BeginForm("SyncToElastic", "Home"))
+    {
+        <h3><strong>Sync Data In Elastic</strong></h3>
+        <div class="form-group">
+            @Html.LabelFor(m => m.TauIds)
+            @Html.EditorFor(m => m.TauIds, new { @class = "form-control", @id = "IDtxtbox" })
+            @Html.ValidationMessageFor(m => m.TauIds, "TAU_ID is required", new { @class = "text-danger" })
+        </div>
+        <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
+        @if (Model != null && !string.IsNullOrEmpty(Model.Message))
+        {
+            <span id="message">@Html.DisplayFor(m => m.Message)</span>
+        }
+    }
+</body>
+</html>
